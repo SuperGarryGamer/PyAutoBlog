@@ -1,19 +1,22 @@
 import os
 import json
 import mistune
+import threading
+import time
 from flask import Flask, send_from_directory, render_template
 
 post_indexes = {}
 
 def create_app():
     update_indexes()
+    index_thread = threading.Thread(target=update_indexes_repeatedly, daemon=True, args=(3600,))
+    index_thread.start()
     app = Flask(__name__)
 
     @app.route("/")
     def root():
         print(post_indexes)
-        return "<h1>Welcome to PyAutoBlog :3</h1>"
-
+        return render_template("homepage.html")
     @app.route("/favicon.ico")
     def favicon():
         return send_from_directory("./static", "favicon.ico")
@@ -27,7 +30,7 @@ def create_app():
         with open(f"posts/{title}/post.md") as f:
             md_text = f.read()
         
-        return render_template("post.html", post_title = meta["post-title"], post_content=mistune.html(md_text))
+        return render_template("post.html", post_title = meta["post-title"], post_date = meta["post-date"], post_content=mistune.html(md_text))
 
     @app.route("/posts/<title>/<filename>")
     def send_post_file(title=None, filename=None):
@@ -38,12 +41,14 @@ def create_app():
 def update_indexes():
     global post_indexes
 
+    print("Updating indexes...")
     loaded_posts = {}
     posts = os.listdir("posts")
     for post in posts:
         metadata = get_post_metadata(post)
         loaded_posts[metadata["post-index"]] = post
     post_indexes = loaded_posts
+    print("Indexes updated :3")
 
 def get_post_metadata(title):
     # breaks if title is wronk
@@ -51,3 +56,8 @@ def get_post_metadata(title):
     with open(f"posts/{title}/meta.json", "r") as f:
             metadata = json.load(f)
     return metadata
+
+def update_indexes_repeatedly(interval):
+    while True:
+        time.sleep(interval)
+        update_indexes()
