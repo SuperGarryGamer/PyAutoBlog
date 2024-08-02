@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <head>
-<title>{{ post_title }} </title>
+    <title>{{ post_title }} </title>
+    <link rel="stylesheet" href="/static/styles/styles.css">
 </head>
 <body>
+    <a class="samecolor" href="/"><b>&lt;Back</b></a>
     <h1> {{ post_title }} </h1>
     <h4> {{ post_date }}</h4>
     {{ post_content|safe }}

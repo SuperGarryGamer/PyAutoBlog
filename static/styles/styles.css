@@ -1,0 +1,9 @@
+body {
+    background-color: #330026;
+    color: #ffffe6;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.samecolor {
+    color: inherit;
+}
