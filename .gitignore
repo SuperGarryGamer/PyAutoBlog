@@ -1,1 +1,4 @@
 .venv
+posts
+__pycache__
+TODO
