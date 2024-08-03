@@ -16,7 +16,7 @@ def create_app():
     @app.route("/")
     def root():
         print(post_indexes)
-        return render_template("homepage.html")
+        return render_template("homepage.html", posts = get_last_n_posts(5))
     @app.route("/favicon.ico")
     def favicon():
         return send_from_directory("./static", "favicon.ico")
@@ -61,3 +61,15 @@ def update_indexes_repeatedly(interval):
     while True:
         time.sleep(interval)
         update_indexes()
+
+def get_last_n_posts(n):
+    num_to_fetch = n
+    posts = []
+    if len(post_indexes) < n:
+        num_to_fetch = len(post_indexes)
+    
+    for i in range(num_to_fetch):
+        title = post_indexes[len(post_indexes) - 1 - i] # Get i-th-newest post
+        meta = get_post_metadata(title)
+        posts.append({"title": title, "pretty_title": meta["post-title"], "date": meta["post-date"]})
+    return posts

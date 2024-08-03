@@ -5,9 +5,11 @@
 <body>
     <h1> hAii~~~  welcome to PyAutoBlog UwU :3 </h1>
     {% for post in posts %}
-    <a href="/posts/{{ post[] }}"    
-            <div class="post-item">
-                finish the thang
-            </div>
+        <a class="samecolor" href="/posts/{{ post["title"] }}"> {# yes this looks extremely ugly in the ide #}
+                <div class="post-item">
+                    <h3> {{ post["pretty_title"] }} </h3>
+                    <h4> {{ post["date"] }} </h4>
+                </div>
+        </a>    
     {% endfor %}
 </body>
