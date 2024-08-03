@@ -3,20 +3,21 @@ import json
 import mistune
 import threading
 import time
+import config
 from flask import Flask, send_from_directory, render_template
 
 post_indexes = {}
 
 def create_app():
     update_indexes()
-    index_thread = threading.Thread(target=update_indexes_repeatedly, daemon=True, args=(3600,))
+    index_thread = threading.Thread(target=update_indexes_repeatedly, daemon=True, args=(config.reindex_interval,))
     index_thread.start()
     app = Flask(__name__)
 
     @app.route("/")
     def root():
         print(post_indexes)
-        return render_template("homepage.html", posts = get_last_n_posts(5))
+        return render_template("homepage.html", posts = get_last_n_posts(config.latest_posts_to_show))
     @app.route("/favicon.ico")
     def favicon():
         return send_from_directory("./static", "favicon.ico")
